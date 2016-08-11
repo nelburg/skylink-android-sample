@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SampleApp</string>
+    <string name="app_name">SampleApp-0.9.6</string>
     <string name="label_all_peers">All Peer(s)</string>
     <string name="title_section1"> Audio Call </string>
     <string name="title_section2"> Video Call </string>
@@ -9,6 +9,7 @@
     <string name="title_section4"> File Transfer </string>
     <string name="title_section5"> Data Transfer </string>
     <string name="title_section6"> Multi-Party Video Call </string>
+    <string name="title_section7"> Configuration </string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_build_info">Build information</string>
@@ -38,4 +39,7 @@
 
     <string name="warn_no_peer_message">There is no peer in the room to send a message to.</string>
     <string name="warn_no_sel_message">You have not selected a Peer to send a message to.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

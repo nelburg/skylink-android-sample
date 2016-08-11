@@ -2,6 +2,7 @@ package sg.com.temasys.skylink.sdk.sampleapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
@@ -20,12 +21,17 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import sg.com.temasys.skylink.sdk.rtc.SkylinkConfig;
 import sg.com.temasys.skylink.sdk.listener.LifeCycleListener;
 import sg.com.temasys.skylink.sdk.listener.MediaListener;
 import sg.com.temasys.skylink.sdk.listener.RemotePeerListener;
 import sg.com.temasys.skylink.sdk.rtc.Errors;
+import sg.com.temasys.skylink.sdk.rtc.SkylinkConfig;
 import sg.com.temasys.skylink.sdk.rtc.SkylinkConnection;
+import sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment.Config;
+import sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment.ConfigFragment;
+
+import static sg.com.temasys.skylink.sdk.sampleapp.Constants.ROOM_NAME_MULTI_DEFAULT;
+import static sg.com.temasys.skylink.sdk.sampleapp.Constants.USER_NAME_MULTI_DEFAULT;
 
 /**
  * Created by janidu on 3/3/15.
@@ -34,10 +40,12 @@ public class MultiPartyVideoCallFragment extends Fragment implements
         MediaListener, RemotePeerListener,
         LifeCycleListener {
 
+    public String ROOM_NAME;
+    public String MY_USER_NAME;
+
+
     public static final String KEY_SELF = "self";
     private static final String TAG = MultiPartyVideoCallFragment.class.getName();
-    private static final String ROOM_NAME = Constants.ROOM_NAME_MULTI;
-    private static final String MY_USER_NAME = "videoCallUser";
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     // Constants for configuration change
@@ -60,6 +68,27 @@ public class MultiPartyVideoCallFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        //Config.USER_NAME_MULTI = sharedPref.getString("MultipartyVideoUserNameSaved", null);
+        String value_multi_user = sharedPref.getString("MultipartyVideoUserNameSaved", null);
+        if (value_multi_user == null) {
+            Config.USER_NAME_MULTI = USER_NAME_MULTI_DEFAULT;
+        }
+        else {
+            Config.USER_NAME_MULTI = value_multi_user;
+        }
+
+        //Config.ROOM_NAME_MULTI = sharedPref.getString("MultipartyVideoRoomNameSaved", null);
+        String value_multi_room = sharedPref.getString("MultipartyVideoRoomNameSaved", null);
+        if (value_multi_room == null) {
+            Config.ROOM_NAME_MULTI = ROOM_NAME_MULTI_DEFAULT;
+        }
+        else {
+            Config.ROOM_NAME_MULTI = value_multi_room;
+        }
+
+        ROOM_NAME = Config.ROOM_NAME_MULTI;
+        MY_USER_NAME = Config.USER_NAME_MULTI;
 
         View rootView = inflater.inflate(R.layout.fragment_video_multiparty, container, false);
 
@@ -70,8 +99,8 @@ public class MultiPartyVideoCallFragment extends Fragment implements
 
         videoViewLayouts = new FrameLayout[]{selfLayout, peer1Layout, peer2Layout, peer3Layout};
 
-        String appKey = getString(R.string.app_key);
-        String appSecret = getString(R.string.app_secret);
+        String appKey = Config.APP_KEY;
+        String appSecret = Config.APP_SECRET;
 
         // Check if it was an orientation change
         if (savedInstanceState != null) {
@@ -102,6 +131,7 @@ public class MultiPartyVideoCallFragment extends Fragment implements
         // by an entity external to the App,
         // such as an App server that holds the Skylink App secret.
         // This is to avoid keeping the App secret within the application
+
         String skylinkConnectionString = Utils.
                 getSkylinkConnectionString(ROOM_NAME,
                         appKey,
@@ -215,7 +245,7 @@ public class MultiPartyVideoCallFragment extends Fragment implements
         config.setHasPeerMessaging(true);
         config.setHasFileTransfer(true);
         config.setMirrorLocalView(true);
-        config.setTimeout(Constants.TIME_OUT);
+        config.setTimeout(ConfigFragment.TIME_OUT);
         // To enable logs from Skylink SDK (e.g. during debugging),
         // Uncomment the following. Do not enable logs for production apps!
         // config.setEnableLogs(true);
@@ -230,7 +260,7 @@ public class MultiPartyVideoCallFragment extends Fragment implements
 //        if (skylinkConnection == null) {
         skylinkConnection = SkylinkConnection.getInstance();
         //the app_key and app_secret is obtained from the temasys developer console.
-        skylinkConnection.init(getString(R.string.app_key),
+        skylinkConnection.init(Config.APP_KEY,
                 getSkylinkConfig(), this.applicationContext);
         // Set listeners to receive callbacks when events are triggered
         setListeners();

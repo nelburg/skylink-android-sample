@@ -14,6 +14,9 @@ import android.widget.Toast;
 import com.temasys.skylink.sampleapp.BuildConfig;
 import com.temasys.skylink.sampleapp.R;
 
+import sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment.Config;
+import sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment.ConfigFragment;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -25,6 +28,7 @@ public class MainActivity extends ActionBarActivity
     private static final int CASE_SECTION_FILE_TRANSFER = 4;
     private static final int CASE_SECTION_DATA_TRANSFER = 5;
     private static final int CASE_SECTION_MULTI_PARTY_VIDEO_CALL = 6;
+    private static final int CASE_SECTION_CONFIG = 7;
 
     private static final int CASE_FRAGMENT_AUDIO_CALL = 0;
     private static final int CASE_FRAGMENT_VIDEO_CALL = 1;
@@ -32,6 +36,7 @@ public class MainActivity extends ActionBarActivity
     private static final int CASE_FRAGMENT_FILE_TRANSFER = 3;
     private static final int CASE_FRAGMENT_DATA_TRANSFER = 4;
     private static final int CASE_FRAGMENT_MULTI_PARTY_VIDEO_CALL = 5;
+    private static final int CASE_FRAGMENT_CONFIG = 6;
     private static final String TAG = MainActivity.class.getName();
 
     /**
@@ -55,6 +60,9 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        Config.APP_KEY = this.getString(R.string.app_key_no_mcu);
+        Config.APP_SECRET = this.getString(R.string.app_secret_no_mcu);
     }
 
     @Override
@@ -88,6 +96,9 @@ public class MainActivity extends ActionBarActivity
                 break;
             case CASE_SECTION_MULTI_PARTY_VIDEO_CALL:
                 mTitle = getString(R.string.title_section6);
+                break;
+            case CASE_SECTION_CONFIG:
+                mTitle = getString(R.string.title_section7);
                 break;
             default:
                 break;
@@ -161,6 +172,9 @@ public class MainActivity extends ActionBarActivity
                 break;
             case CASE_FRAGMENT_MULTI_PARTY_VIDEO_CALL:
                 fragmentToLaunch = new MultiPartyVideoCallFragment();
+                break;
+            case CASE_FRAGMENT_CONFIG:
+                fragmentToLaunch = new ConfigFragment();
                 break;
             default:
                 break;

@@ -1,6 +1,8 @@
 package sg.com.temasys.skylink.sdk.sampleapp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
@@ -18,12 +20,17 @@ import com.temasys.skylink.sampleapp.R;
 
 import java.util.Date;
 
-import sg.com.temasys.skylink.sdk.rtc.SkylinkConfig;
 import sg.com.temasys.skylink.sdk.listener.LifeCycleListener;
 import sg.com.temasys.skylink.sdk.listener.MediaListener;
 import sg.com.temasys.skylink.sdk.listener.RemotePeerListener;
 import sg.com.temasys.skylink.sdk.rtc.Errors;
+import sg.com.temasys.skylink.sdk.rtc.SkylinkConfig;
 import sg.com.temasys.skylink.sdk.rtc.SkylinkConnection;
+import sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment.Config;
+import sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment.ConfigFragment;
+
+import static sg.com.temasys.skylink.sdk.sampleapp.Constants.ROOM_NAME_AUDIO_DEFAULT;
+import static sg.com.temasys.skylink.sdk.sampleapp.Constants.USER_NAME_AUDIO_DEFAULT;
 
 /**
  * This class is used to demonstrate the AudioCall between two clients in WebRTC Created by
@@ -31,8 +38,11 @@ import sg.com.temasys.skylink.sdk.rtc.SkylinkConnection;
  */
 public class AudioCallFragment extends Fragment
         implements LifeCycleListener, MediaListener, RemotePeerListener {
-    public static final String ROOM_NAME = Constants.ROOM_NAME_AUDIO;
-    public static final String MY_USER_NAME = "audioCallUser";
+    // Inflate the layout for this fragment
+
+    private String ROOM_NAME;
+    private String MY_USER_NAME;
+
     private static final String TAG = AudioCallFragment.class.getCanonicalName();
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -53,9 +63,28 @@ public class AudioCallFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_audio_call, container, false);
-
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         tvRoomDetails = (TextView) rootView.findViewById(R.id.tv_room_details);
         btnAudioCall = (Button) rootView.findViewById(R.id.btn_audio_call);
+        //Config.ROOM_NAME_AUDIO = sharedPref.getString("AudioRoomNameSaved", null);
+        String value_audio_room = sharedPref.getString("AudioRoomNameSaved", null);
+        if (value_audio_room == null) {
+            Config.ROOM_NAME_AUDIO = ROOM_NAME_AUDIO_DEFAULT;
+        }
+        else {
+            Config.ROOM_NAME_AUDIO = value_audio_room;
+        }
+
+        //Config.USER_NAME_AUDIO = sharedPref.getString("AudioUserNameSaved", null);
+        String value_audio_user = sharedPref.getString("AudioUserNameSaved", null);
+        if (value_audio_user == null) {
+            Config.USER_NAME_AUDIO = USER_NAME_AUDIO_DEFAULT;
+        }
+        else {
+            Config.USER_NAME_AUDIO = value_audio_user;
+        }
+        ROOM_NAME = Config.ROOM_NAME_AUDIO;
+        MY_USER_NAME = Config.USER_NAME_AUDIO;
 
         // Check if it was an orientation change
         if (savedInstanceState != null) {
@@ -77,8 +106,8 @@ public class AudioCallFragment extends Fragment
             @Override
             public void onClick(View v) {
 
-                String appKey = getString(R.string.app_key);
-                String appSecret = getString(R.string.app_secret);
+                String appKey = Config.APP_KEY;
+                String appSecret = Config.APP_SECRET;
                 connectToRoom(appKey, appSecret);
 
                 onConnectUIChange();
@@ -183,7 +212,7 @@ public class AudioCallFragment extends Fragment
         config.setAudioVideoReceiveConfig(SkylinkConfig.AudioVideoConfig.AUDIO_ONLY);
         config.setHasPeerMessaging(true);
         config.setHasFileTransfer(true);
-        config.setTimeout(Constants.TIME_OUT);
+        config.setTimeout(ConfigFragment.TIME_OUT);
         // To enable logs from Skylink SDK (e.g. during debugging),
         // Uncomment the following. Do not enable logs for production apps!
         // config.setEnableLogs(true);
@@ -196,7 +225,7 @@ public class AudioCallFragment extends Fragment
 
     private void initializeSkylinkConnection() {
         skylinkConnection = SkylinkConnection.getInstance();
-        skylinkConnection.init(getString(R.string.app_key), getSkylinkConfig(),
+        skylinkConnection.init(Config.APP_KEY, getSkylinkConfig(),
                 this.parentActivity.getApplicationContext());
 
         // Set listeners to receive callbacks when events are triggered
@@ -264,6 +293,7 @@ public class AudioCallFragment extends Fragment
             Log.d(TAG, "Skylink failed to connect!");
             Toast.makeText(parentActivity, "Skylink failed to connect!\nReason : "
                     + message, Toast.LENGTH_SHORT).show();
+            onDisconnectUIChange();
         }
     }
 

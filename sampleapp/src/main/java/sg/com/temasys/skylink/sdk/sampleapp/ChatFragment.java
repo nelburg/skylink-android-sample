@@ -1,6 +1,8 @@
 package sg.com.temasys.skylink.sdk.sampleapp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -23,13 +25,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import sg.com.temasys.skylink.sdk.rtc.SkylinkConfig;
 import sg.com.temasys.skylink.sdk.listener.LifeCycleListener;
 import sg.com.temasys.skylink.sdk.listener.MessagesListener;
 import sg.com.temasys.skylink.sdk.listener.RemotePeerListener;
 import sg.com.temasys.skylink.sdk.rtc.Errors;
+import sg.com.temasys.skylink.sdk.rtc.SkylinkConfig;
 import sg.com.temasys.skylink.sdk.rtc.SkylinkConnection;
 import sg.com.temasys.skylink.sdk.rtc.SkylinkException;
+import sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment.Config;
+import sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment.ConfigFragment;
+
+import static sg.com.temasys.skylink.sdk.sampleapp.Constants.ROOM_NAME_CHAT_DEFAULT;
+import static sg.com.temasys.skylink.sdk.sampleapp.Constants.USER_NAME_CHAT_DEFAULT;
 
 /**
  * This class is used to demonstrate the Chat between two clients in WebRTC Created by
@@ -38,8 +45,9 @@ import sg.com.temasys.skylink.sdk.rtc.SkylinkException;
 public class ChatFragment extends MultiPartyFragment
         implements LifeCycleListener, RemotePeerListener, MessagesListener {
 
-    public static final String ROOM_NAME = Constants.ROOM_NAME_CHAT;
-    public static final String MY_USER_NAME = "chatRoomUser";
+    private String ROOM_NAME;
+    private String MY_USER_NAME;
+
     private static final String TAG = ChatFragment.class.getCanonicalName();
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -66,6 +74,28 @@ public class ChatFragment extends MultiPartyFragment
                              Bundle savedInstanceState) {
 
         //initialize views
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+        //Config.USER_NAME_CHAT = sharedPref.getString("ChatUserNameSaved", null);
+        String value_chat_user = sharedPref.getString("ChatUserNameSaved", null);
+        if (value_chat_user == null) {
+            Config.USER_NAME_CHAT = USER_NAME_CHAT_DEFAULT;
+        }
+        else {
+            Config.USER_NAME_CHAT = value_chat_user;
+        }
+
+        //Config.ROOM_NAME_CHAT = sharedPref.getString("ChatRoomNameSaved", null);
+        String value_chat_room = sharedPref.getString("ChatRoomNameSaved", null);
+        if (value_chat_room == null) {
+            Config.ROOM_NAME_CHAT = ROOM_NAME_CHAT_DEFAULT;
+        }
+        else {
+            Config.ROOM_NAME_CHAT = value_chat_room;
+        }
+        ROOM_NAME = Config.ROOM_NAME_CHAT;
+        MY_USER_NAME = Config.USER_NAME_CHAT;
+
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
         listViewChats = (ListView) rootView.findViewById(R.id.lv_messages);
 
@@ -81,8 +111,8 @@ public class ChatFragment extends MultiPartyFragment
         btnSendP2PMessage = (Button) rootView.findViewById(R.id.btn_send_p2p_message);
         tvRoomDetails = (TextView) rootView.findViewById(R.id.tv_room_details);
 
-        String appKey = getString(R.string.app_key);
-        String appSecret = getString(R.string.app_secret);
+        String appKey = Config.APP_KEY;
+        String appSecret = Config.APP_SECRET;
 
         if (chatMessageCollection == null) {
             chatMessageCollection = new ArrayList();
@@ -117,6 +147,7 @@ public class ChatFragment extends MultiPartyFragment
             }
         } else {
             // [MultiParty]
+
             // Just set room details
             Utils.setRoomDetailsMulti(isConnected(), peerJoined, tvRoomDetails, ROOM_NAME, MY_USER_NAME);
         }
@@ -182,6 +213,8 @@ public class ChatFragment extends MultiPartyFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("Set1",Config.ROOM_NAME_CHAT);
+
     }
 
     @Override
@@ -241,7 +274,7 @@ public class ChatFragment extends MultiPartyFragment
         config.setAudioVideoReceiveConfig(SkylinkConfig.AudioVideoConfig.NO_AUDIO_NO_VIDEO);
         config.setHasPeerMessaging(true);
         config.setHasFileTransfer(true);
-        config.setTimeout(Constants.TIME_OUT);
+        config.setTimeout(ConfigFragment.TIME_OUT);
         // To enable logs from Skylink SDK (e.g. during debugging),
         // Uncomment the following. Do not enable logs for production apps!
         // config.setEnableLogs(true);
@@ -270,7 +303,7 @@ public class ChatFragment extends MultiPartyFragment
     private void initializeSkylinkConnection() {
         skylinkConnection = SkylinkConnection.getInstance();
         //the app_key and app_secret is obtained from the temasys developer console.
-        skylinkConnection.init(getString(R.string.app_key),
+        skylinkConnection.init(Config.APP_KEY,
                 getSkylinkConfig(), parentActivity.getApplicationContext());
 
         //set listeners to receive callbacks when events are triggered
@@ -368,6 +401,7 @@ public class ChatFragment extends MultiPartyFragment
             Log.d(TAG, "Skylink failed to connect!");
             Toast.makeText(parentActivity, "Skylink failed to connect!\nReason : "
                     + message, Toast.LENGTH_SHORT).show();
+            Utils.setRoomDetailsMulti(isConnected(), peerJoined, tvRoomDetails, ROOM_NAME, MY_USER_NAME);
         }
     }
 

@@ -1,6 +1,8 @@
 package sg.com.temasys.skylink.sdk.sampleapp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -21,20 +23,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-import sg.com.temasys.skylink.sdk.rtc.SkylinkConfig;
 import sg.com.temasys.skylink.sdk.listener.DataTransferListener;
 import sg.com.temasys.skylink.sdk.listener.LifeCycleListener;
 import sg.com.temasys.skylink.sdk.listener.RemotePeerListener;
 import sg.com.temasys.skylink.sdk.rtc.Errors;
+import sg.com.temasys.skylink.sdk.rtc.SkylinkConfig;
 import sg.com.temasys.skylink.sdk.rtc.SkylinkConnection;
 import sg.com.temasys.skylink.sdk.rtc.SkylinkException;
+import sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment.Config;
+import sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment.ConfigFragment;
+
+import static sg.com.temasys.skylink.sdk.sampleapp.Constants.ROOM_NAME_DATA_DEFAULT;
+import static sg.com.temasys.skylink.sdk.sampleapp.Constants.ROOM_NAME_MULTI_DEFAULT;
+import static sg.com.temasys.skylink.sdk.sampleapp.Constants.USER_NAME_DATA_DEFAULT;
 
 public class DataTransferFragment extends MultiPartyFragment implements
         RemotePeerListener, DataTransferListener,
         LifeCycleListener {
 
-    private static final String MY_USER_NAME = "DataTransferUser";
-    private static final String ROOM_NAME = Constants.ROOM_NAME_DATA;
+    private String ROOM_NAME;
+    private String MY_USER_NAME;
+
     private static final String TAG = DataTransferFragment.class.getName();
 
     // Constants for configuration change
@@ -53,6 +62,27 @@ public class DataTransferFragment extends MultiPartyFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
 
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        //Config.USER_NAME_DATA = sharedPref.getString("DataTransferUserNameSaved", null);
+        String value_data_user = sharedPref.getString("DataTransferUserNameSaved", null);
+        if (value_data_user == null) {
+            Config.USER_NAME_DATA = USER_NAME_DATA_DEFAULT;
+        }
+        else {
+            Config.USER_NAME_DATA = value_data_user;
+        }
+        //Config.ROOM_NAME_DATA = sharedPref.getString("DataTransferRoomNameSaved", null);
+        String value_data_room = sharedPref.getString("DataTransferRoomNameSaved", null);
+        if (value_data_room == null) {
+            Config.ROOM_NAME_DATA = ROOM_NAME_DATA_DEFAULT;
+        }
+        else {
+            Config.ROOM_NAME_DATA = value_data_room;
+        }
+
+        MY_USER_NAME = Config.USER_NAME_DATA;
+        ROOM_NAME = Config.ROOM_NAME_DATA;
+
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_data_transfer, container, false);
 
@@ -68,8 +98,8 @@ public class DataTransferFragment extends MultiPartyFragment implements
         btnSendDataRoom = (Button) rootView.findViewById(R.id.btn_send_data_to_room);
         btnSendDataPeer = (Button) rootView.findViewById(R.id.btn_send_data_to_peer);
 
-        String appKey = getString(R.string.app_key);
-        String appSecret = getString(R.string.app_secret);
+        String appKey = Config.APP_KEY;
+        String appSecret = Config.APP_SECRET;
 
         // [MultiParty]
         // Initialise peerList if required.
@@ -237,7 +267,7 @@ public class DataTransferFragment extends MultiPartyFragment implements
         config.setAudioVideoSendConfig(SkylinkConfig.AudioVideoConfig.NO_AUDIO_NO_VIDEO);
         config.setAudioVideoReceiveConfig(SkylinkConfig.AudioVideoConfig.NO_AUDIO_NO_VIDEO);
         config.setHasDataTransfer(true);
-        config.setTimeout(Constants.TIME_OUT);
+        config.setTimeout(ConfigFragment.TIME_OUT);
         // To enable logs from Skylink SDK (e.g. during debugging),
         // Uncomment the following. Do not enable logs for production apps!
         // config.setEnableLogs(true);
@@ -265,7 +295,7 @@ public class DataTransferFragment extends MultiPartyFragment implements
     private void initializeSkylinkConnection() {
         skylinkConnection = SkylinkConnection.getInstance();
         //the app_key and app_secret is obtained from the temasys developer console.
-        skylinkConnection.init(getString(R.string.app_key), getSkylinkConfig(),
+        skylinkConnection.init(Config.APP_KEY, getSkylinkConfig(),
                 parentActivity.getApplicationContext());
 
         //set listeners to receive callbacks when events are triggered
@@ -352,6 +382,7 @@ public class DataTransferFragment extends MultiPartyFragment implements
             Log.d(TAG, "Skylink failed to connect!");
             Toast.makeText(parentActivity, "Skylink failed to connect!\nReason: "
                     + message, Toast.LENGTH_SHORT).show();
+            Utils.setRoomDetailsMulti(isConnected(), peerJoined, tvRoomDetails, ROOM_NAME, MY_USER_NAME);
         }
     }
 
