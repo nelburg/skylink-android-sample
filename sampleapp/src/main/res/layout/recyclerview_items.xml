@@ -20,12 +20,20 @@
         android:paddingBottom="20dp"
         android:paddingTop="20dp">
 
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/rdDefault" />
+
         <TextView
             android:id="@+id/subTextview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginLeft="35dp" />
 
         <ImageView
             android:layout_width="20dp"
@@ -38,7 +46,6 @@
             android:layout_marginEnd="20dp"
             app:srcCompat="@android:drawable/ic_menu_delete" />
 
-
         <TextView
             android:id="@+id/descTextview"
             android:layout_width="wrap_content"
@@ -46,7 +53,8 @@
             android:text="Description"
             android:textSize="10sp"
             android:layout_below="@+id/subTextview"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="35dp" />
 
         <ImageView
             android:layout_width="20dp"

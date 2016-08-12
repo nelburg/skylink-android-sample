@@ -1,19 +1,16 @@
 package sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment;
 
-import android.animation.Keyframe;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.support.v4.content.res.TypedArrayUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,9 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.Key;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -46,12 +41,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     final private String PREFS_NAME = "KeyInfo";
     final private String TAG = "SharedPreferenceTest";
-    List<KeyInfo> SubjectValues;
+    private List<KeyInfo> keyInfos;
     Context context;
 
     public RecyclerViewAdapter(Context context1, List<KeyInfo> SubjectValues1) {
-        SubjectValues = new ArrayList<KeyInfo>();
-        SubjectValues = SubjectValues1;
+        keyInfos = new ArrayList<KeyInfo>();
+        keyInfos = SubjectValues1;
         context = context1;
     }
 
@@ -69,15 +64,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView textView2 = holder.textView2;
         ImageView editImage = holder.editImg;
         ImageView deleteImage = holder.deleteImg;
+        RadioButton radiobDefault = holder.rdDefault;
 
-        textView.setText(SubjectValues.get(pos).getKey());
-        textView2.setText(SubjectValues.get(pos).getDescription());
+        textView.setText(keyInfos.get(pos).getKey());
+        textView2.setText(keyInfos.get(pos).getDescription());
 
         if(position == 0) {
             holder.itemView.setSelected(true);
             editImage.setVisibility(View.INVISIBLE);
             deleteImage.setVisibility(View.INVISIBLE);
+            radiobDefault.setVisibility(View.INVISIBLE);
         }
+
+        radiobDefault.setOnTouchListener(new View.OnTouchListener() {
+             @Override
+             public boolean onTouch(View view, MotionEvent motionEvent) {
+                 //Todo
+                 Toast.makeText(context,"you select radio button",Toast.LENGTH_SHORT).show();
+                 return false;
+             }
+         });
 
         editImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,17 +104,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         .setCancelable(false)
                         .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
-                                KeyInfo ki = SubjectValues.get(pos);
-                                Log.e("ki", String.valueOf(ki));
-                                Log.e("ki.isMCU()", String.valueOf(ki.isMCU()));
-                                if (ki.isMCU()) {
+                                KeyInfo info = keyInfos.get(pos);
+                                if (info.isMCU()) {
                                     removeItemFromJSONArrayAtIndex(KeyFragment.arrayMCU, pos);
-                                    Log.e("No of arraryMCU", String.valueOf(KeyFragment.arrayMCU.length()));
+
                                 } else {
                                     removeItemFromJSONArrayAtIndex(KeyFragment.arrayNoMCU, pos);
-                                    Log.e("No of arraryNoMCU", String.valueOf(KeyFragment.arrayNoMCU.length()));
+
                                 }
-                                SubjectValues.remove(pos);
+                                keyInfos.remove(pos);
                                 notifyDataSetChanged();
                                 saveUserInfo();
                             }
@@ -127,7 +131,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private void keyInfoEditDialog(int pos) {
         final int position = pos;
-        final KeyInfo ki = SubjectValues.get(position);
+        final KeyInfo keyInfo = keyInfos.get(position);
         AlertDialog.Builder alert = new AlertDialog.Builder(context);
         alert.setTitle("Edit Key Info").setMessage("Please fill the information");
         LinearLayout layout = new LinearLayout(context);
@@ -143,7 +147,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final EditText keyBox = new EditText(context);
         keyBox.setHint("Key");
         layout.addView(keyBox);
-        keyBox.setText(ki.getKey());
+        keyBox.setText(keyInfo.getKey());
 
         //Secret TextView + EditText
         TextView secretTxtView = new TextView(context);
@@ -155,7 +159,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final EditText secretBox = new EditText(context);
         secretBox.setHint("Secret");
         layout.addView(secretBox);
-        secretBox.setText(ki.getSecret());
+        secretBox.setText(keyInfo.getSecret());
         secretBox.setInputType(InputType.TYPE_CLASS_TEXT |
                 InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
@@ -169,7 +173,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final EditText descriptionBox = new EditText(context);
         descriptionBox.setHint("Description");
         layout.addView(descriptionBox);
-        descriptionBox.setText(ki.getDescription());
+        descriptionBox.setText(keyInfo.getDescription());
 
         LinearLayout layoutForRadioGroup = new LinearLayout(context);
         layoutForRadioGroup.setOrientation(LinearLayout.VERTICAL);
@@ -191,7 +195,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         });
         rg.addView(mcuRadio);
         rg.addView(nomcuRadio);
-        if (ki.isMCU()) {
+        if (keyInfo.isMCU()) {
             rg.check(mcuRadio.getId());
         } else {
             rg.check(nomcuRadio.getId());
@@ -206,23 +210,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if(KeyFragment.checkKeyAndSecret(keyBox.getText().toString(),secretBox.getText().toString())
                         && !isMCU[0].equals(null)){
                     try {
-                        JSONObject jo;
-                        if(ki.isMCU()) {
-                            jo = KeyFragment.arrayMCU.getJSONObject(position);
+                        JSONObject jsonKeyInfo;
+                        if(keyInfo.isMCU()) {
+                            jsonKeyInfo = KeyFragment.arrayMCU.getJSONObject(position);
                         } else {
-                            jo = KeyFragment.arrayNoMCU.getJSONObject(position);
+                            jsonKeyInfo = KeyFragment.arrayNoMCU.getJSONObject(position);
                         }
-                        jo.put("key", keyBox.getText().toString());
-                        jo.put("secret", secretBox.getText().toString());
-                        jo.put("description", descriptionBox.getText().toString());
-                        if(isMCU[0] != ki.isMCU()) {
+                        jsonKeyInfo.put("key", keyBox.getText().toString());
+                        jsonKeyInfo.put("secret", secretBox.getText().toString());
+                        jsonKeyInfo.put("description", descriptionBox.getText().toString());
+                        if(isMCU[0] != keyInfo.isMCU()) {
                             JSONObject typeChangeObject = new JSONObject();
                             typeChangeObject.put("key", keyBox.getText().toString());
                             typeChangeObject.put("secret", secretBox.getText().toString());
                             typeChangeObject.put("description", descriptionBox.getText().toString());
                             typeChangeObject.put("MCU", isMCU[0]);
-                            Log.e("ki.isMCU()", String.valueOf(ki.isMCU()));
-                            if(ki.isMCU()){
+                            Log.e("keyInfo.isMCU()", String.valueOf(keyInfo.isMCU()));
+                            if(keyInfo.isMCU()){
                                 Log.e("number of arrayNoMCU1", String.valueOf(KeyFragment.arrayNoMCU.length()));
                                 KeyFragment.arrayNoMCU.put(typeChangeObject);
                                 Log.e("arrayNoMCU2", String.valueOf(KeyFragment.arrayNoMCU));
@@ -236,16 +240,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                 Log.e("arrayNoMCU", String.valueOf(KeyFragment.arrayNoMCU));
                             }
                         }
-                        if(ki.getKey().equals(Config.APP_KEY)){ // key u edit is current key
+                        if(keyInfo.getKey().equals(Config.APP_KEY)){ // key u edit is current key
                             Config.APP_KEY = keyBox.getText().toString();
                             Config.APP_SECRET = secretBox.getText().toString();
                             Config.APP_KEY_DESCRIPTION = descriptionBox.getText().toString();
                         }
                         saveUserInfo();
-                        if(ki.isMCU()) {
-                            SubjectValues = ManageKeyFragment.convertJSONArrayToKeyInfoList(KeyFragment.arrayMCU);
+                        if(keyInfo.isMCU()) {
+                            keyInfos = ManageKeyFragment.convertJSONArrayToKeyInfoList(KeyFragment.arrayMCU);
                         } else {
-                            SubjectValues = ManageKeyFragment.convertJSONArrayToKeyInfoList(KeyFragment.arrayNoMCU);
+                            keyInfos = ManageKeyFragment.convertJSONArrayToKeyInfoList(KeyFragment.arrayNoMCU);
                         }
 
                     } catch (JSONException e) {
@@ -324,7 +328,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        return SubjectValues.size();
+        return keyInfos.size();
     }
 
 
@@ -334,6 +338,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView textView2;
         ImageView editImg;
         ImageView deleteImg;
+        RadioButton rdDefault;
 
         public rvViewHolder(View itemView) {
             super(itemView);
@@ -343,6 +348,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             // When Click Edit Button
             editImg = (ImageView) v.findViewById(R.id.editImage);
             deleteImg = (ImageView) v.findViewById(R.id.deleteImage);
+            rdDefault = (RadioButton) v.findViewById(R.id.rdDefault);
             // Setup the click listener
             v.setOnClickListener(this);
         }

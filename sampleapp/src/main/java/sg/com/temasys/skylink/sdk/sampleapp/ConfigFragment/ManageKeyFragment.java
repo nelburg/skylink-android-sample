@@ -45,7 +45,12 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class ManageKeyFragment extends Fragment {
 
+    private String MCUSample;
+    private String noMCUSample;
+
     RecyclerView recyclerView;
+    TextView currentKey;
+    TextView description;
 
     RecyclerView.Adapter recyclerViewAdapter;
     RecyclerView.LayoutManager recyclerViewLayoutManager;
@@ -76,6 +81,24 @@ public class ManageKeyFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_manage_key, container, false);
+
+        MCUSample = String.format("{'key':'%s','secret':'%s','description':'%s','MCU':%s}",
+                getResources().getString(R.string.app_key_mcu),
+                getResources().getString(R.string.app_secret_mcu),
+                "Sample App Key with MCU",
+                true
+        );
+        noMCUSample = String.format("{'key':'%s','secret':'%s','description':'%s','MCU':%s}",
+                getResources().getString(R.string.app_key_no_mcu),
+                getResources().getString(R.string.app_secret_no_mcu),
+                "Sample App Key with no MCU",
+                false
+        );
+
+        currentKey = (TextView) view.findViewById(R.id.currentKey);
+        description = (TextView) view.findViewById(R.id.description);
+        setTextViews();
+
         recyclerView = (RecyclerView) view.findViewById(R.id.rvKeyList);
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
@@ -107,6 +130,10 @@ public class ManageKeyFragment extends Fragment {
         return view;
     }
 
+    public void setTextViews() {
+        currentKey.setText("Current Key: " + Config.APP_KEY);
+        description.setText(String.format("Description: %s", Config.APP_KEY_DESCRIPTION));
+    }
 
     public void keyInfoCreateDialog() {
         Context context = getContext();

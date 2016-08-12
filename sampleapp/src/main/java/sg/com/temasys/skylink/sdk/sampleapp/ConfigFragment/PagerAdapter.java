@@ -20,12 +20,9 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    KeyFragment tab1 = new KeyFragment();
-                    return tab1;
-                case 1:
                     RoomFragment tab3 = new RoomFragment();
                     return tab3;
-                case 2:
+                case 1:
                     ManageKeyFragment tab2 = new ManageKeyFragment();
                     return tab2;
                 default:

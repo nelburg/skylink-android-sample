@@ -23,7 +23,6 @@ import com.temasys.skylink.sampleapp.R;
 
 public class ConfigFragment extends Fragment {
 
-    public static final int DURATION = 20000;
     public static final int TIME_OUT = 60;
 
     @Override
@@ -32,9 +31,8 @@ public class ConfigFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_config, container, false);
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("App Key"));
-        tabLayout.addTab(tabLayout.newTab().setText("Room Settings"));
-        tabLayout.addTab(tabLayout.newTab().setText("Key Settings"));
+        tabLayout.addTab(tabLayout.newTab().setText("Room"));
+        tabLayout.addTab(tabLayout.newTab().setText("Key/Secret"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
@@ -44,7 +42,6 @@ public class ConfigFragment extends Fragment {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.e("TabLayout", String.valueOf(tab.getPosition()));
                 viewPager.setCurrentItem(tab.getPosition());
             }
 

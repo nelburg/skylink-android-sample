@@ -3,6 +3,7 @@ package sg.com.temasys.skylink.sdk.sampleapp;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -97,9 +98,6 @@ public class MainActivity extends ActionBarActivity
             case CASE_SECTION_MULTI_PARTY_VIDEO_CALL:
                 mTitle = getString(R.string.title_section6);
                 break;
-            case CASE_SECTION_CONFIG:
-                mTitle = getString(R.string.title_section7);
-                break;
             default:
                 break;
         }
@@ -141,6 +139,15 @@ public class MainActivity extends ActionBarActivity
             Log.d(TAG, versionInfo);
             Toast.makeText(this, versionInfo, Toast.LENGTH_LONG).show();
             return true;
+        }
+        else if(id == R.id.action_configuration) {
+            // update the main content by replacing fragments
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            ConfigFragment fragment = new ConfigFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit();
+
         }
 
         return super.onOptionsItemSelected(item);

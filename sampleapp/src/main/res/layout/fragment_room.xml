@@ -29,14 +29,17 @@
                     android:text="Audio Call Config"
                     android:textSize="18dp"
                     android:layout_marginBottom="5dp"
-                    android:id="@+id/txtAudio"/>
+                    android:id="@+id/txtAudio"
+                    tools:textColor="?attr/colorPrimary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="UserName"
                     android:textSize="16dp"
                     android:layout_below="@+id/txtAudio"
-                    android:id="@+id/txtUserAudio"/>
+                    android:id="@+id/txtUserAudio"
+                    tools:textColor="?attr/colorPrimary"
+                    />
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -44,14 +47,16 @@
                     android:layout_below="@+id/txtUserAudio"
                     android:id="@+id/edtAudioUserName"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_alignParentStart="true"
+                    android:textColor="?android:attr/textColorTertiary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="RoomName"
                     android:textSize="16dp"
                     android:layout_below="@+id/edtAudioUserName"
-                    android:id="@+id/txtRoomAudio"/>
+                    android:id="@+id/txtRoomAudio"
+                    tools:textColor="?attr/colorPrimary" />
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -60,6 +65,7 @@
                     android:layout_below="@+id/txtRoomAudio"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentStart="true"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:layout_alignParentEnd="true" />
             </RelativeLayout>
             <RelativeLayout
@@ -77,20 +83,23 @@
                     android:text="Video Call Config"
                     android:textSize="18dp"
                     android:layout_marginBottom="5dp"
-                    android:id="@+id/txtVideo"/>
+                    android:id="@+id/txtVideo"
+                   />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="UserName"
                     android:textSize="16dp"
                     android:layout_below="@+id/txtVideo"
-                    android:id="@+id/txtUserVideo"/>
+                    android:id="@+id/txtUserVideo"
+                    tools:textColor="?attr/colorPrimary" />
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:layout_below="@+id/txtUserVideo"
                     android:id="@+id/edtVideoUserName"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentStart="true" />
                 <TextView
@@ -99,11 +108,13 @@
                     android:text="RoomName"
                     android:textSize="16dp"
                     android:layout_below="@+id/edtVideoUserName"
-                    android:id="@+id/txtRoomVideo"/>
+                    android:id="@+id/txtRoomVideo"
+                    tools:textColor="?attr/colorPrimary" />
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:layout_below="@+id/txtRoomVideo"
                     android:id="@+id/edtVideoRoomName"
                     android:layout_alignParentEnd="true"
@@ -124,20 +135,23 @@
                     android:text="Chatting Config"
                     android:textSize="18dp"
                     android:layout_marginBottom="5dp"
-                    android:id="@+id/txtChat"/>
+                    android:id="@+id/txtChat"
+                    tools:textColor="?attr/colorPrimary" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="UserName"
                     android:textSize="16dp"
                     android:layout_below="@+id/txtChat"
-                    android:id="@+id/txtUserChat"/>
+                    android:id="@+id/txtUserChat"
+                    tools:textColor="?attr/colorPrimary" />
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtUserChat"
                     android:id="@+id/edtChatUserName"
                     android:maxLines="1"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentStart="true" />
                 <TextView
@@ -146,12 +160,14 @@
                     android:text="RoomName"
                     android:textSize="16dp"
                     android:layout_below="@+id/edtChatUserName"
-                    android:id="@+id/txtRoomChat"/>
+                    android:id="@+id/txtRoomChat"
+                    tools:textColor="?attr/colorPrimary" />
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtRoomChat"
                     android:maxLines="1"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:id="@+id/edtChatRoomName"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentStart="true" />
@@ -171,18 +187,21 @@
                     android:text="Multiparty Video Call Config"
                     android:textSize="18dp"
                     android:layout_marginBottom="5dp"
+                    tools:textColor="?attr/colorPrimary"
                     android:id="@+id/txtMultipartyVideo"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="UserName"
                     android:textSize="16dp"
+                    tools:textColor="?attr/colorPrimary"
                     android:layout_below="@+id/txtMultipartyVideo"
                     android:id="@+id/txtUserMulti"/>
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtUserMulti"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:id="@+id/edtMultipartyVideoUserName"
                     android:layout_alignParentEnd="true"
                     android:maxLines="1"
@@ -192,12 +211,14 @@
                     android:layout_height="wrap_content"
                     android:text="RoomName"
                     android:textSize="16dp"
+                    tools:textColor="?attr/colorPrimary"
                     android:layout_below="@+id/edtMultipartyVideoUserName"
                     android:id="@+id/txtRoomMulti"/>
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:layout_below="@+id/txtRoomMulti"
                     android:id="@+id/edtMultipartyVideoRoomName"
                     android:layout_alignParentEnd="true"
@@ -218,6 +239,7 @@
                     android:text="Data Transfer Config"
                     android:textSize="18dp"
                     android:layout_marginBottom="5dp"
+                    tools:textColor="?attr/colorPrimary"
                     android:id="@+id/txtDataTransfer"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -225,12 +247,14 @@
                     android:text="UserName"
                     android:textSize="16dp"
                     android:layout_below="@+id/txtDataTransfer"
+                    tools:textColor="?attr/colorPrimary"
                     android:id="@+id/txtUserData"/>
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtUserData"
                     android:maxLines="1"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:id="@+id/edtDataTransferUserName"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentStart="true" />
@@ -240,6 +264,7 @@
                     android:text="RoomName"
                     android:textSize="16dp"
                     android:layout_below="@+id/edtDataTransferUserName"
+                    tools:textColor="?attr/colorPrimary"
                     android:id="@+id/txtRoomData"/>
                 <EditText
                     android:layout_width="wrap_content"
@@ -247,6 +272,7 @@
                     android:layout_below="@+id/txtRoomData"
                     android:id="@+id/edtDataTransferRoomName"
                     android:maxLines="1"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentStart="true" />
             </RelativeLayout>
@@ -264,6 +290,7 @@
                     android:layout_height="wrap_content"
                     android:text="File Transfer Config"
                     android:textSize="18dp"
+                    tools:textColor="?attr/colorPrimary"
                     android:layout_marginBottom="5dp"
                     android:id="@+id/txtFileTransfer"/>
                 <TextView
@@ -271,11 +298,13 @@
                     android:layout_height="wrap_content"
                     android:text="UserName"
                     android:textSize="16dp"
+                    tools:textColor="?attr/colorPrimary"
                     android:layout_below="@+id/txtFileTransfer"
                     android:id="@+id/txtUserFile"/>
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:layout_below="@+id/txtUserFile"
                     android:id="@+id/edtFileTransferUserName"
                     android:layout_alignParentEnd="true"
@@ -287,12 +316,14 @@
                     android:text="RoomName"
                     android:textSize="16dp"
                     android:layout_below="@+id/edtFileTransferUserName"
+                    tools:textColor="?attr/colorPrimary"
                     android:id="@+id/txtRoomFile"/>
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:layout_below="@+id/txtRoomFile"
+                    android:textColor="?android:attr/textColorTertiary"
                     android:id="@+id/edtFileTransferRoomName"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentStart="true" />
@@ -312,6 +343,7 @@
             android:background="@android:color/white"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:gravity="center_vertical|center_horizontal" />
+            android:gravity="center_vertical|center_horizontal"
+            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog" />
     </RelativeLayout>
 </FrameLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-->
+  Instructions for using the config-example.xml file.
+  To use your own App Key and secret for this app:
+  MAKE A COPY of config_example.xml (do NOT edit config-example.xml for app usage)
+    and give it a name not used in this directory (res/value/), e.g. config.xml.
+  Uncomment the xml elements in it.
+  Replace the value "Enter your app ID here." below with your app ID.
+  Replace the value "Enter your app secret here." below with your app secret.
+  Optionally, replace the "Enter room name here." below with your default room name.
+<-->
+
+<resources>
+    <!--<string name="app_key_mcu">"Enter your app ID here."</string>-->
+    <!--<string name="app_secret_mcu">"Enter your app secret here."</string>-->
+
+    <!--<string name="app_key_no_mcu">"Enter your app ID here."</string>-->
+    <!--<string name="app_secret_no_mcu">"Enter your app secret here."</string>-->
+</resources>

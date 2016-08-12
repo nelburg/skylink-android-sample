@@ -269,7 +269,6 @@ public class KeyFragment extends Fragment {
     private void saveUserInfo() {
         SharedPreferences userInfo = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-
             @Override
             public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 
