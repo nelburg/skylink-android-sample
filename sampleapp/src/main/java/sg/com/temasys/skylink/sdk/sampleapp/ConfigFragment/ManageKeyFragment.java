@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,7 +42,6 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -49,6 +49,15 @@ public class ManageKeyFragment extends Fragment {
 
     private String MCUSample;
     private String noMCUSample;
+
+    EditText keyText;
+    EditText secretText;
+    EditText descText;
+    Button btnSave;
+    Button btnCancel;
+    RadioButton rbMCU;
+    RadioButton rbNoMCU;
+    Dialog dialog;
 
     RecyclerView recyclerView;
     TextView currentKey;
@@ -99,14 +108,14 @@ public class ManageKeyFragment extends Fragment {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                if(checkedId == R.id.radio_btn_manage_MCU) {
+                if (checkedId == R.id.radio_btn_manage_MCU) {
                     keyInfoList = convertJSONArrayToKeyInfoList(KeyFragment.arrayMCU);
                 } else if (checkedId == R.id.radio_btn_manage_no_MCU) {
                     keyInfoList = convertJSONArrayToKeyInfoList(KeyFragment.arrayNoMCU);
 
                 }
-                Log.e("keyInfoList",keyInfoList.toString());
-                recyclerViewAdapter = new RecyclerViewAdapter(getContext(),keyInfoList);
+                Log.e("keyInfoList", keyInfoList.toString());
+                recyclerViewAdapter = new RecyclerViewAdapter(getContext(), keyInfoList);
                 recyclerView.setAdapter(recyclerViewAdapter);
             }
         });
@@ -115,8 +124,7 @@ public class ManageKeyFragment extends Fragment {
         createKeyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                keyInfoCreateDialog();
-                keyInfoCD();
+                createKey();
 
             }
         });
@@ -124,21 +132,38 @@ public class ManageKeyFragment extends Fragment {
         return view;
     }
 
-    private void createKeyDialogBox() {
-        final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.dialog_key_info);
-      //  dialog.setTitle("Create New Key");
+    public void createKey() {
+        getDialogBox();
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
 
-//      Button dialogButton = (Button) dialog.findViewById(R.id.btnOK);
-//
-//        // if button is clicked, close the custom dialog
-//        dialogButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//            }
-//        });
-        dialog.show();
+    }
+
+    public void editKey() {
+        getDialogBox();
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
     }
 
     public void setTextViews() {
@@ -146,10 +171,26 @@ public class ManageKeyFragment extends Fragment {
         description.setText(String.format("Description: %s", Config.APP_KEY_DESCRIPTION));
     }
 
-    public void keyInfoCD() {
+    public void getDialogBox() {
         Context context = getContext();
-        Dialog dialog = new Dialog(context);
+        dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_key_info);
+        dialog.setTitle("Create New Key");
+        //Prepare TextBox Hint Text
+        TextInputLayout keyInputLayout = (TextInputLayout) dialog.findViewById(R.id.keyTextLayout);
+        keyInputLayout.setHint("Key");
+        TextInputLayout secretInputLayout = (TextInputLayout) dialog.findViewById(R.id.secretTextLayout);
+        secretInputLayout.setHint("Secret");
+        TextInputLayout descInputLayout = (TextInputLayout) dialog.findViewById(R.id.descTextLayout);
+        descInputLayout.setHint("Description");
+        // Get The Elements
+        keyText = (EditText) dialog.findViewById(R.id.keyEditText);
+        secretText = (EditText) dialog.findViewById(R.id.secretEditText);
+        descText = (EditText) dialog.findViewById(R.id.descEditText);
+        btnSave = (Button) dialog.findViewById(R.id.btnSave);
+        btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+        rbMCU = (RadioButton) dialog.findViewById(R.id.radioMCU);
+        rbNoMCU = (RadioButton) dialog.findViewById(R.id.radioNoMCU);
         dialog.show();
     }
 
@@ -204,14 +245,13 @@ public class ManageKeyFragment extends Fragment {
         final RadioButton nomcuRadio = new RadioButton(getContext());
         nomcuRadio.setText("No MCU");
         final Boolean[] isMCU = {null};
-        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // checkedId is the RadioButton selected
                 ArrayAdapter<String> adapter;
-                if(checkedId == mcuRadio.getId()) isMCU[0] = true;
-                else if(checkedId == nomcuRadio.getId()) isMCU[0] = false;
+                if (checkedId == mcuRadio.getId()) isMCU[0] = true;
+                else if (checkedId == nomcuRadio.getId()) isMCU[0] = false;
             }
         });
         rg.addView(mcuRadio);
@@ -224,10 +264,10 @@ public class ManageKeyFragment extends Fragment {
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // continue
-                if(checkKeyAndSecret(keyBox.getText().toString(),secretBox.getText().toString())
-                        && !isMCU[0].equals(null)){
+                if (checkKeyAndSecret(keyBox.getText().toString(), secretBox.getText().toString())
+                        && !isMCU[0].equals(null)) {
                     try {
-                        if (!checkKeyInsideOfArray(keyBox.getText().toString())){
+                        if (!checkKeyInsideOfArray(keyBox.getText().toString())) {
                             String newKeyInfo = String.format(
                                     "{'key':'%s','secret':'%s','description':'%s','MCU':%s}",
                                     keyBox.getText().toString(),
@@ -241,18 +281,18 @@ public class ManageKeyFragment extends Fragment {
                             } else if (!newObject.getBoolean("MCU")) {
                                 KeyFragment.arrayNoMCU.put(newObject);
                             }
-                            Toast.makeText(getContext(),"Create succeeded",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Create succeeded", Toast.LENGTH_LONG).show();
                             saveUserInfo();
                             KeyFragment.mergeArrayWithSpinnerArray();
-                            if(mcuSelect) {
+                            if (mcuSelect) {
                                 keyInfoList = convertJSONArrayToKeyInfoList(KeyFragment.arrayMCU);
                             } else {
                                 keyInfoList = convertJSONArrayToKeyInfoList(KeyFragment.arrayNoMCU);
                             }
-                            recyclerViewAdapter = new RecyclerViewAdapter(getContext(),keyInfoList);
+                            recyclerViewAdapter = new RecyclerViewAdapter(getContext(), keyInfoList);
                             recyclerView.setAdapter(recyclerViewAdapter);
                         } else {
-                            Toast.makeText(getContext(),"This key already exist!",
+                            Toast.makeText(getContext(), "This key already exist!",
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
@@ -260,7 +300,7 @@ public class ManageKeyFragment extends Fragment {
                     }
 
                 } else {
-                    Toast.makeText(getContext(),"Incorrect key, secret and/or you need to choose MCU or not",
+                    Toast.makeText(getContext(), "Incorrect key, secret and/or you need to choose MCU or not",
                             Toast.LENGTH_LONG).show();
                 }
 
@@ -275,13 +315,13 @@ public class ManageKeyFragment extends Fragment {
     }
 
     public boolean checkKeyInsideOfArray(String key) throws JSONException {
-        for (int i=0; i<KeyFragment.arrayMCU.length(); i++) {
+        for (int i = 0; i < KeyFragment.arrayMCU.length(); i++) {
             JSONObject jo = KeyFragment.arrayMCU.getJSONObject(i);
             if (jo.getString("key").equals(key)) {
                 return true;
             }
         }
-        for (int i=0; i<KeyFragment.arrayNoMCU.length(); i++) {
+        for (int i = 0; i < KeyFragment.arrayNoMCU.length(); i++) {
             JSONObject jo = KeyFragment.arrayNoMCU.getJSONObject(i);
             if (jo.getString("key").equals(key)) {
                 return true;
@@ -301,7 +341,7 @@ public class ManageKeyFragment extends Fragment {
     /**
      * Save User Information
      */
-    private void saveUserInfo(){
+    private void saveUserInfo() {
         SharedPreferences userInfo = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
 
@@ -328,7 +368,7 @@ public class ManageKeyFragment extends Fragment {
         Log.i(TAG, "Read User Info");
         Log.i(TAG, "mcuArray: " + mcuArray);
         Log.i(TAG, "nomcuArray: " + nomcuArray);
-        if(mcuArray != null && nomcuArray != null) {
+        if (mcuArray != null && nomcuArray != null) {
             KeyFragment.arrayMCU = new JSONArray(mcuArray);
             KeyFragment.arrayNoMCU = new JSONArray(nomcuArray);
             Log.e(TAG, KeyFragment.arrayMCU.toString());
@@ -341,9 +381,9 @@ public class ManageKeyFragment extends Fragment {
 
     public static List<KeyInfo> convertJSONArrayToKeyInfoList(JSONArray ja) {
         List keyInfoList = new ArrayList<>();
-        for (int i = 0; i<ja.length(); i++) {
+        for (int i = 0; i < ja.length(); i++) {
             KeyInfo ki = new KeyInfo();
-            Log.e("JSONArray",ja.toString());
+            Log.e("JSONArray", ja.toString());
             try {
                 JSONObject jo = new JSONObject(ja.get(i).toString());
                 ki.setKey(jo.getString("key"));
@@ -351,8 +391,7 @@ public class ManageKeyFragment extends Fragment {
                 ki.setDescription(jo.getString("description"));
                 ki.setMCU(jo.getBoolean("MCU"));
                 keyInfoList.add(ki);
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
