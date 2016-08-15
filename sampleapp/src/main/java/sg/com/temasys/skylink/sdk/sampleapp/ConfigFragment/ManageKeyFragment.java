@@ -3,6 +3,7 @@ package sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment;
 
 import org.json.JSONArray;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -123,11 +125,30 @@ public class ManageKeyFragment extends Fragment {
         createKeyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                keyInfoCreateDialog();
+               // keyInfoCreateDialog();
+                createKeyDialogBox();
+
             }
         });
 
         return view;
+    }
+
+    private void createKeyDialogBox() {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_key_info);
+      //  dialog.setTitle("Create New Key");
+
+//      Button dialogButton = (Button) dialog.findViewById(R.id.btnOK);
+//
+//        // if button is clicked, close the custom dialog
+//        dialogButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
+        dialog.show();
     }
 
     public void setTextViews() {
