@@ -115,14 +115,9 @@ public class ManageKeyFragment extends Fragment {
         createKeyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-<<<<<<< HEAD
 //                keyInfoCreateDialog();
                 keyInfoCD();
-=======
-               // keyInfoCreateDialog();
-                createKeyDialogBox();
 
->>>>>>> eaf0ce1049bf9e4cefa62c2ae5c5fd476dbe0008
             }
         });
 
