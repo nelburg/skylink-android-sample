@@ -6,6 +6,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
         android:layout_weight="1">
 
         <EditText
@@ -16,6 +17,16 @@
             android:ems="10"
             android:id="@+id/editText"
             android:layout_weight="1" />
+=======
+        android:layout_weight="1" >
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="79dp"
+            android:inputType="textPersonName"
+            android:text="Name"
+            android:ems="10"
+            android:id="@+id/editText1" />
+>>>>>>> eaf0ce1049bf9e4cefa62c2ae5c5fd476dbe0008
 
     </android.support.design.widget.TextInputLayout>
 
@@ -26,6 +37,7 @@
 
         <EditText
             android:layout_width="match_parent"
+<<<<<<< HEAD
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:text="Name"
@@ -49,4 +61,29 @@
             android:layout_weight="1" />
     </android.support.design.widget.TextInputLayout>
 
+=======
+            android:layout_height="85dp"
+            android:inputType="textPersonName"
+            android:text="Name"
+            android:ems="10"
+            android:id="@+id/editText3"
+            android:layout_weight="1" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="89dp"
+            android:inputType="textPersonName"
+            android:text="Name"
+            android:ems="10"
+            android:id="@+id/editText2" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/btnOK"
+        android:text="OK"/>
+
+
+>>>>>>> eaf0ce1049bf9e4cefa62c2ae5c5fd476dbe0008
 </LinearLayout>

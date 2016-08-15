@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -114,12 +115,35 @@ public class ManageKeyFragment extends Fragment {
         createKeyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+<<<<<<< HEAD
 //                keyInfoCreateDialog();
                 keyInfoCD();
+=======
+               // keyInfoCreateDialog();
+                createKeyDialogBox();
+
+>>>>>>> eaf0ce1049bf9e4cefa62c2ae5c5fd476dbe0008
             }
         });
 
         return view;
+    }
+
+    private void createKeyDialogBox() {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_key_info);
+      //  dialog.setTitle("Create New Key");
+
+//      Button dialogButton = (Button) dialog.findViewById(R.id.btnOK);
+//
+//        // if button is clicked, close the custom dialog
+//        dialogButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
+        dialog.show();
     }
 
     public void setTextViews() {
