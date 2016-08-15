@@ -3,6 +3,7 @@ package sg.com.temasys.skylink.sdk.sampleapp.ConfigFragment;
 
 import org.json.JSONArray;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -65,16 +66,6 @@ public class ManageKeyFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Toast.makeText(getContext(),"onResume2", Toast.LENGTH_SHORT).show();
-        try {
-            getUserInfo();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -123,7 +114,8 @@ public class ManageKeyFragment extends Fragment {
         createKeyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                keyInfoCreateDialog();
+//                keyInfoCreateDialog();
+                keyInfoCD();
             }
         });
 
@@ -133,6 +125,13 @@ public class ManageKeyFragment extends Fragment {
     public void setTextViews() {
         currentKey.setText("Current Key: " + Config.APP_KEY);
         description.setText(String.format("Description: %s", Config.APP_KEY_DESCRIPTION));
+    }
+
+    public void keyInfoCD() {
+        Context context = getContext();
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_key_info);
+        dialog.show();
     }
 
     public void keyInfoCreateDialog() {
