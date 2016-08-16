@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -40,7 +38,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.rvViewHolder> {
-
 
     final private String PREFS_NAME = "KeyInfo";
     final private String TAG = "SharedPreferenceTest";
@@ -85,8 +82,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         textView.setText(keyInfos.get(pos).getKey());
         textView2.setText(keyInfos.get(pos).getDescription());
 
-        //  radioButtonDefault.setChecked();
-
         radioGroupDefault.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -99,7 +94,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });
 
-
         if (position == 0) {
             holder.itemView.setSelected(true);
             editImage.setVisibility(View.INVISIBLE);
@@ -109,7 +103,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         radioButtonDefault.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                //Todo
                 try {
                     JSONObject selectedItem;
                     boolean isMCU = ManageKeyFragment.mcuSelect;
@@ -126,9 +119,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     e.printStackTrace();
                 }
 
-
-                Toast.makeText(context, "you select radio button " + String.valueOf(pos), Toast.LENGTH_SHORT).show();
-                Log.e("you select", String.valueOf(pos));
                 return false;
             }
         });
@@ -136,7 +126,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         editImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                keyInfoEditDialog(pos);
                 editKey(pos);
             }
         });
@@ -208,19 +197,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             typeChangeObject.put("secret", secretText.getText().toString());
                             typeChangeObject.put("description", descText.getText().toString());
                             typeChangeObject.put("MCU", isMCU[0]);
-                            Log.e("keyInfo.isMCU()", String.valueOf(keyInfo.isMCU()));
                             if (keyInfo.isMCU()) {
-                                Log.e("number of arrayNoMCU1", String.valueOf(ManageKeyFragment.arrayNoMCU.length()));
                                 ManageKeyFragment.arrayNoMCU.put(typeChangeObject);
-                                Log.e("arrayNoMCU2", String.valueOf(ManageKeyFragment.arrayNoMCU));
                                 removeItemFromJSONArrayAtIndex(ManageKeyFragment.arrayMCU, pos);
-                                Log.e("arrayMCU", String.valueOf(ManageKeyFragment.arrayMCU));
                             } else {
-                                Log.e("number of arrayMCU1", String.valueOf(ManageKeyFragment.arrayMCU.length()));
                                 ManageKeyFragment.arrayMCU.put(typeChangeObject);
-                                Log.e("arrayMCU2", String.valueOf(ManageKeyFragment.arrayMCU));
                                 removeItemFromJSONArrayAtIndex(ManageKeyFragment.arrayNoMCU, pos);
-                                Log.e("arrayNoMCU", String.valueOf(ManageKeyFragment.arrayNoMCU));
                             }
                         }
                         if (keyInfo.getKey().equals(Config.APP_KEY)) { // key u edit is current key
@@ -290,147 +272,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         dialog.show();
     }
 
-//    private void keyInfoEditDialog(int pos) {
-//        final int position = pos;
-//        final KeyInfo keyInfo = keyInfos.get(position);
-//        AlertDialog.Builder alert = new AlertDialog.Builder(context);
-//        alert.setTitle("Edit Key Info").setMessage("Please fill the information");
-//        LinearLayout layout = new LinearLayout(context);
-//        layout.setOrientation(LinearLayout.VERTICAL);
-//
-//        //Key TextView + EditText
-//        TextView keyTxtView = new TextView(context);
-//        keyTxtView.setText("Key");
-//        keyTxtView.setTextSize(18);
-//        keyTxtView.setPadding(10, 10, 10, 10);
-//        layout.addView(keyTxtView);
-//
-//        final EditText keyBox = new EditText(context);
-//        keyBox.setHint("Key");
-//        layout.addView(keyBox);
-//        keyBox.setText(keyInfo.getKey());
-//
-//        //Secret TextView + EditText
-//        TextView secretTxtView = new TextView(context);
-//        secretTxtView.setText("Secret");
-//        secretTxtView.setTextSize(18);
-//        secretTxtView.setPadding(10, 10, 10, 10);
-//        layout.addView(secretTxtView);
-//
-//        final EditText secretBox = new EditText(context);
-//        secretBox.setHint("Secret");
-//        layout.addView(secretBox);
-//        secretBox.setText(keyInfo.getSecret());
-//        secretBox.setInputType(InputType.TYPE_CLASS_TEXT |
-//                InputType.TYPE_TEXT_VARIATION_PASSWORD);
-//
-//        //Description TextView + EditText
-//        TextView descTxtView = new TextView(context);
-//        descTxtView.setText("Description");
-//        descTxtView.setTextSize(18);
-//        descTxtView.setPadding(10, 10, 10, 10);
-//        layout.addView(descTxtView);
-//
-//        final EditText descriptionBox = new EditText(context);
-//        descriptionBox.setHint("Description");
-//        layout.addView(descriptionBox);
-//        descriptionBox.setText(keyInfo.getDescription());
-//
-//        LinearLayout layoutForRadioGroup = new LinearLayout(context);
-//        layoutForRadioGroup.setOrientation(LinearLayout.VERTICAL);
-//        final RadioGroup rg = new RadioGroup(context);
-//        final RadioButton mcuRadio = new RadioButton(context);
-//        mcuRadio.setText("MCU");
-//        final RadioButton nomcuRadio = new RadioButton(context);
-//        nomcuRadio.setText("No MCU");
-//        final Boolean[] isMCU = {null};
-//        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-//        {
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                // checkedId is the RadioButton selected
-//                // btn_confirm.setEnabled(true);
-//                if(checkedId == mcuRadio.getId()) isMCU[0] = true;
-//                else if(checkedId == nomcuRadio.getId()) isMCU[0] = false;
-//            }
-//        });
-//        rg.addView(mcuRadio);
-//        rg.addView(nomcuRadio);
-//        if (keyInfo.isMCU()) {
-//            rg.check(mcuRadio.getId());
-//        } else {
-//            rg.check(nomcuRadio.getId());
-//        }
-//
-//        layoutForRadioGroup.addView(rg);
-//        layout.addView(layoutForRadioGroup);
-//
-//        alert.setView(layout);
-//        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int which) {
-//                if(ManageKeyFragment.checkKeyAndSecret(keyBox.getText().toString(),secretBox.getText().toString())
-//                        && !isMCU[0].equals(null)){
-//                    try {
-//                        JSONObject jsonKeyInfo;
-//                        if(keyInfo.isMCU()) {
-//                            jsonKeyInfo = ManageKeyFragment.arrayMCU.getJSONObject(position);
-//                        } else {
-//                            jsonKeyInfo = ManageKeyFragment.arrayNoMCU.getJSONObject(position);
-//                        }
-//                        jsonKeyInfo.put("key", keyBox.getText().toString());
-//                        jsonKeyInfo.put("secret", secretBox.getText().toString());
-//                        jsonKeyInfo.put("description", descriptionBox.getText().toString());
-//                        if(isMCU[0] != keyInfo.isMCU()) {
-//                            JSONObject typeChangeObject = new JSONObject();
-//                            typeChangeObject.put("key", keyBox.getText().toString());
-//                            typeChangeObject.put("secret", secretBox.getText().toString());
-//                            typeChangeObject.put("description", descriptionBox.getText().toString());
-//                            typeChangeObject.put("MCU", isMCU[0]);
-//                            Log.e("keyInfo.isMCU()", String.valueOf(keyInfo.isMCU()));
-//                            if(keyInfo.isMCU()){
-//                                Log.e("number of arrayNoMCU1", String.valueOf(ManageKeyFragment.arrayNoMCU.length()));
-//                                ManageKeyFragment.arrayNoMCU.put(typeChangeObject);
-//                                Log.e("arrayNoMCU2", String.valueOf(ManageKeyFragment.arrayNoMCU));
-//                                removeItemFromJSONArrayAtIndex(ManageKeyFragment.arrayMCU, position);
-//                                Log.e("arrayMCU", String.valueOf(ManageKeyFragment.arrayMCU));
-//                            } else {
-//                                Log.e("number of arrayMCU1", String.valueOf(ManageKeyFragment.arrayMCU.length()));
-//                                ManageKeyFragment.arrayMCU.put(typeChangeObject);
-//                                Log.e("arrayMCU2", String.valueOf(ManageKeyFragment.arrayMCU));
-//                                removeItemFromJSONArrayAtIndex(ManageKeyFragment.arrayNoMCU, position);
-//                                Log.e("arrayNoMCU", String.valueOf(ManageKeyFragment.arrayNoMCU));
-//                            }
-//                        }
-//                        if(keyInfo.getKey().equals(Config.APP_KEY)){ // key u edit is current key
-//                            Config.APP_KEY = keyBox.getText().toString();
-//                            Config.APP_SECRET = secretBox.getText().toString();
-//                            Config.APP_KEY_DESCRIPTION = descriptionBox.getText().toString();
-//                        }
-//                        saveUserInfo();
-//                        if(keyInfo.isMCU()) {
-//                            keyInfos = ManageKeyFragment.convertJSONArrayToKeyInfoList(ManageKeyFragment.arrayMCU);
-//                        } else {
-//                            keyInfos = ManageKeyFragment.convertJSONArrayToKeyInfoList(ManageKeyFragment.arrayNoMCU);
-//                        }
-//
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                } else {
-//                    Toast.makeText(context,"Incorrect key, secret and/or you need to choose MCU or not",Toast.LENGTH_LONG).show();
-//                }
-//
-//            }
-//        })
-//                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        // do nothing
-//                    }
-//                });
-//        alert.show();
-//    }
-
     private void saveUserInfo() {
         SharedPreferences userInfo = context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -489,7 +330,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return keyInfos.size();
     }
-
 
     public class rvViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textView;

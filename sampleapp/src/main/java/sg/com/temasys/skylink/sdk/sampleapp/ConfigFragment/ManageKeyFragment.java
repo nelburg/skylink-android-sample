@@ -5,7 +5,6 @@ import org.json.JSONArray;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,16 +12,12 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -30,13 +25,10 @@ import android.widget.Toast;
 
 import com.temasys.skylink.sampleapp.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.CharBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -80,7 +72,6 @@ public class ManageKeyFragment extends Fragment {
     public ManageKeyFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -126,8 +117,6 @@ public class ManageKeyFragment extends Fragment {
                     mcuSelect = false;
                     keyInfoList = convertJSONArrayToKeyInfoList(arrayNoMCU);
                 }
-                Log.e("keyInfoList", keyInfoList.toString());
-                Log.e("mcuSelect", String.valueOf(mcuSelect));
                 recyclerViewAdapter = new RecyclerViewAdapter(getContext(), keyInfoList);
                 recyclerView.setAdapter(recyclerViewAdapter);
             }
@@ -156,7 +145,6 @@ public class ManageKeyFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                Log.e("ISMCU[0]", String.valueOf(isMCU[0]==null));
                 if (checkKeyAndSecret(keyText.getText().toString(), secretText.getText().toString())
                         && !(isMCU[0]==null)) {
                     try {
@@ -174,7 +162,6 @@ public class ManageKeyFragment extends Fragment {
                             } else if (!newObject.getBoolean("MCU")) {
                                 arrayNoMCU.put(newObject);
                             }
-                            Toast.makeText(getContext(), "Create succeeded", Toast.LENGTH_LONG).show();
                             saveUserInfo();
                             if (mcuSelect) {
                                 keyInfoList = convertJSONArrayToKeyInfoList(arrayMCU);
@@ -201,7 +188,7 @@ public class ManageKeyFragment extends Fragment {
 
     }
 
-    static public void setTextViews() {
+    public static void setTextViews() {
         currentKey.setText("Current Key: " + Config.APP_KEY);
         description.setText(String.format("Description: %s", Config.APP_KEY_DESCRIPTION));
     }
@@ -238,135 +225,16 @@ public class ManageKeyFragment extends Fragment {
         dialog.show();
     }
 
-//    public void keyInfoCreateDialog() {
-//        Context context = getContext();
-//        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
-//        alert.setTitle("Add Key Information").setMessage("Please fill in the blank below");
-//        LinearLayout layout = new LinearLayout(context);
-//        layout.setOrientation(LinearLayout.VERTICAL);
-//
-//        //Key TextView + EditText
-//        TextView keyTxtView = new TextView(context);
-//        keyTxtView.setText("Key");
-//        keyTxtView.setTextSize(18);
-//        keyTxtView.setPadding(10, 10, 10, 10);
-//        layout.addView(keyTxtView);
-//
-//        final EditText keyBox = new EditText(getContext());
-//        keyBox.setHint("Key");
-//        layout.addView(keyBox);
-//
-//        //Secret TextView + EditText
-//        TextView secretTxtView = new TextView(context);
-//        secretTxtView.setText("Secret");
-//        secretTxtView.setTextSize(18);
-//        secretTxtView.setPadding(10, 10, 10, 10);
-//        layout.addView(secretTxtView);
-//
-//        final EditText secretBox = new EditText(context);
-//        secretBox.setHint("Secret");
-//        layout.addView(secretBox);
-//        secretBox.setInputType(InputType.TYPE_CLASS_TEXT |
-//                InputType.TYPE_TEXT_VARIATION_PASSWORD);
-//
-//        //Description TextView + EditText
-//        TextView descriptionTxtView = new TextView(context);
-//        descriptionTxtView.setText("Description");
-//        descriptionTxtView.setTextSize(18);
-//        descriptionTxtView.setPadding(10, 10, 10, 10);
-//        layout.addView(descriptionTxtView);
-//
-//        final EditText descriptionBox = new EditText(context);
-//        descriptionBox.setHint("Description");
-//        layout.addView(descriptionBox);
-//
-//
-//        LinearLayout layoutForRadioGroup = new LinearLayout(getContext());
-//        layoutForRadioGroup.setOrientation(LinearLayout.HORIZONTAL);
-//        final RadioGroup rg = new RadioGroup(getContext());
-//        final RadioButton mcuRadio = new RadioButton(getContext());
-//        mcuRadio.setText("MCU");
-//        final RadioButton nomcuRadio = new RadioButton(getContext());
-//        nomcuRadio.setText("No MCU");
-//        final Boolean[] isMCU = {null};
-//        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                // checkedId is the RadioButton selected
-//                ArrayAdapter<String> adapter;
-//                if (checkedId == mcuRadio.getId()) isMCU[0] = true;
-//                else if (checkedId == nomcuRadio.getId()) isMCU[0] = false;
-//            }
-//        });
-//        rg.addView(mcuRadio);
-//        rg.addView(nomcuRadio);
-//
-//        layoutForRadioGroup.addView(rg);
-//        layout.addView(layoutForRadioGroup);
-//
-//        alert.setView(layout);
-//        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int which) {
-//                // continue
-//                if (checkKeyAndSecret(keyBox.getText().toString(), secretBox.getText().toString())
-//                        && !isMCU[0].equals(null)) {
-//                    try {
-//                        if (!checkKeyInsideOfArray(keyBox.getText().toString())) {
-//                            String newKeyInfo = String.format(
-//                                    "{'key':'%s','secret':'%s','description':'%s','MCU':%s}",
-//                                    keyBox.getText().toString(),
-//                                    secretBox.getText().toString(),
-//                                    descriptionBox.getText().toString(),
-//                                    isMCU[0]
-//                            );
-//                            JSONObject newObject = new JSONObject(newKeyInfo);
-//                            if (newObject.getBoolean("MCU")) {
-//                                arrayMCU.put(newObject);
-//                            } else if (!newObject.getBoolean("MCU")) {
-//                                arrayNoMCU.put(newObject);
-//                            }
-//                            Toast.makeText(getContext(), "Create succeeded", Toast.LENGTH_LONG).show();
-//                            saveUserInfo();
-//                            if (mcuSelect) {
-//                                keyInfoList = convertJSONArrayToKeyInfoList(arrayMCU);
-//                            } else {
-//                                keyInfoList = convertJSONArrayToKeyInfoList(arrayNoMCU);
-//                            }
-//                            recyclerViewAdapter = new RecyclerViewAdapter(getContext(), keyInfoList);
-//                            recyclerView.setAdapter(recyclerViewAdapter);
-//                        } else {
-//                            Toast.makeText(getContext(), "This key already exist!",
-//                                    Toast.LENGTH_LONG).show();
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                } else {
-//                    Toast.makeText(getContext(), "Incorrect key, secret and/or you need to choose MCU or not",
-//                            Toast.LENGTH_LONG).show();
-//                }
-//
-//            }
-//        })
-//                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        // do nothing
-//                    }
-//                });
-//        alert.show();
-//    }
-
     public boolean checkKeyInsideOfArray(String key) throws JSONException {
         for (int i = 0; i < arrayMCU.length(); i++) {
-            JSONObject jo = arrayMCU.getJSONObject(i);
-            if (jo.getString("key").equals(key)) {
+            JSONObject object = arrayMCU.getJSONObject(i);
+            if (object.getString("key").equals(key)) {
                 return true;
             }
         }
         for (int i = 0; i < arrayNoMCU.length(); i++) {
-            JSONObject jo = arrayNoMCU.getJSONObject(i);
-            if (jo.getString("key").equals(key)) {
+            JSONObject object = arrayNoMCU.getJSONObject(i);
+            if (object.getString("key").equals(key)) {
                 return true;
             }
         }
@@ -414,8 +282,6 @@ public class ManageKeyFragment extends Fragment {
         if (mcuArray != null && nomcuArray != null) {
             arrayMCU = new JSONArray(mcuArray);
             arrayNoMCU = new JSONArray(nomcuArray);
-            Log.e(TAG, arrayMCU.toString());
-            Log.e(TAG, arrayNoMCU.toString());
         } else {
             saveUserInfo();
         }
@@ -425,7 +291,6 @@ public class ManageKeyFragment extends Fragment {
         List keyInfoList = new ArrayList<>();
         for (int i = 0; i < ja.length(); i++) {
             KeyInfo ki = new KeyInfo();
-            Log.e("JSONArray", ja.toString());
             try {
                 JSONObject jo = new JSONObject(ja.get(i).toString());
                 ki.setKey(jo.getString("key"));
@@ -439,6 +304,5 @@ public class ManageKeyFragment extends Fragment {
         }
         return keyInfoList;
     }
-
 
 }
