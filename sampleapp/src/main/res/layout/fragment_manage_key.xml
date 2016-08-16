@@ -8,25 +8,16 @@
     <!-- TODO: Update blank fragment layout -->
 
     <RelativeLayout
-        android:id="@+id/layoutOne"
+        android:id="@+id/LayoutOne"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:layout_marginBottom="20dp"
-        android:background="@android:color/background_light"
-        android:padding="5dp">
-
-    <LinearLayout
-        android:id="@+id/tvLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="#e4e4e4"
-        android:orientation="vertical"
-        android:padding="10dp"
-        android:layout_margin="5dp">
-
+        android:background="#d2d0d0"
+        android:id="@+id/currentKeyPlace"
+        android:padding="10dp">
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
@@ -53,34 +44,28 @@
             android:text="Description"
             android:textSize="16dp"
             tools:textColor="?attr/colorPrimary" />
-    </LinearLayout>
+
     </RelativeLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fbtn_create_key"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="50dp"
-        android:layout_marginRight="50dp"
-        android:clickable="true"
-        app:fabSize="normal"
-        app:srcCompat="@android:drawable/ic_input_add" />
+    <!--</RelativeLayout>-->
 
-    <RelativeLayout
-        android:id="@+id/layoutTwo"
-        android:layout_width="match_parent"
-        android:layout_marginTop="100dp"
-        android:background="@android:color/background_light"
-        android:padding="5dp"
-        android:layout_height="match_parent">
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/layoutTwo"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:background="@android:color/background_light"-->
+        <!--android:layout_below="@+id/LayoutOne"-->
+        <!--android:padding="5dp"-->
+        <!--android:layout_height="509dp"-->
+        <!--android:layout_gravity="bottom">-->
 
         <RadioGroup
             android:id="@+id/radio_grp_manage_MCU"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_below="@+id/currentKeyPlace"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
 
             <RadioButton
                 android:id="@+id/radio_btn_manage_MCU"
@@ -101,10 +86,21 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvKeyList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:scrollbars="vertical">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/radio_grp_manage_MCU"
+            android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
+
     </RelativeLayout>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fbtn_create_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="50dp"
+        android:clickable="true"
+        app:fabSize="normal"
+        app:srcCompat="@android:drawable/ic_input_add" />
 </FrameLayout>
