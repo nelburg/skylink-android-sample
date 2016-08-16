@@ -57,10 +57,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     RadioGroup rgMCUorNot;
     final Boolean[] isMCU = {null};
     Dialog dialog;
+    private RadioButton lastCheckedRB = null;
 
-    public RecyclerViewAdapter(Context context1, List<KeyInfo> SubjectValues1) {
+    public RecyclerViewAdapter(Context context1, List<KeyInfo> keys) {
         keyInfos = new ArrayList<KeyInfo>();
-        keyInfos = SubjectValues1;
+        keyInfos = keys;
         context = context1;
     }
 
@@ -74,29 +75,63 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(rvViewHolder holder, int position) {
         final int pos = position;
-        TextView textView = holder.textView;
+        final TextView textView = holder.textView;
         TextView textView2 = holder.textView2;
         ImageView editImage = holder.editImg;
         ImageView deleteImage = holder.deleteImg;
-        RadioButton radiobDefault = holder.rdDefault;
+        RadioButton radioButtonDefault = holder.rdDefault;
+        RadioGroup radioGroupDefault = holder.rgDefault;
 
         textView.setText(keyInfos.get(pos).getKey());
         textView2.setText(keyInfos.get(pos).getDescription());
 
-        if(position == 0) {
+        //  radioButtonDefault.setChecked();
+
+        radioGroupDefault.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton checked_rb = (RadioButton) group.findViewById(checkedId);
+                checked_rb.setChecked(true);
+                if (lastCheckedRB != null) {
+                    lastCheckedRB.setChecked(false);
+                }
+                lastCheckedRB = checked_rb;
+            }
+        });
+
+
+        if (position == 0) {
             holder.itemView.setSelected(true);
             editImage.setVisibility(View.INVISIBLE);
             deleteImage.setVisibility(View.INVISIBLE);
         }
 
-        radiobDefault.setOnTouchListener(new View.OnTouchListener() {
-             @Override
-             public boolean onTouch(View view, MotionEvent motionEvent) {
-                 //Todo
-                 Toast.makeText(context,"you select radio button",Toast.LENGTH_SHORT).show();
-                 return false;
-             }
-         });
+        radioButtonDefault.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                //Todo
+                try {
+                    JSONObject selectedItem;
+                    boolean isMCU = ManageKeyFragment.mcuSelect;
+                    if (isMCU) {
+                        selectedItem = ManageKeyFragment.arrayMCU.getJSONObject(pos);
+                    } else {
+                        selectedItem = ManageKeyFragment.arrayNoMCU.getJSONObject(pos);
+                    }
+                    Config.APP_KEY = selectedItem.getString("key");
+                    Config.APP_SECRET = selectedItem.getString("secret");
+                    Config.APP_KEY_DESCRIPTION = selectedItem.getString("description");
+                    ManageKeyFragment.setTextViews();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                Toast.makeText(context, "you select radio button " + String.valueOf(pos), Toast.LENGTH_SHORT).show();
+                Log.e("you select", String.valueOf(pos));
+                return false;
+            }
+        });
 
         editImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,8 +151,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 alertDialogBuilder
                         .setMessage("Are you sure to delete?")
                         .setCancelable(false)
-                        .setNegativeButton("Yes",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                        .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 KeyInfo info = keyInfos.get(pos);
                                 if (info.isMCU()) {
                                     removeItemFromJSONArrayAtIndex(ManageKeyFragment.arrayMCU, pos);
@@ -129,8 +164,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                 saveUserInfo();
                             }
                         })
-                        .setPositiveButton("No",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                        .setPositiveButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
                         });
@@ -155,11 +190,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View view) {
                 dialog.dismiss();
                 final KeyInfo keyInfo = keyInfos.get(pos);
-                if(ManageKeyFragment.checkKeyAndSecret(keyText.getText().toString(),secretText.getText().toString())
-                        && !(isMCU[0]==null)){
+                if (ManageKeyFragment.checkKeyAndSecret(keyText.getText().toString(), secretText.getText().toString())
+                        && !(isMCU[0] == null)) {
                     try {
                         JSONObject jsonKeyInfo;
-                        if(keyInfo.isMCU()) {
+                        if (keyInfo.isMCU()) {
                             jsonKeyInfo = ManageKeyFragment.arrayMCU.getJSONObject(pos);
                         } else {
                             jsonKeyInfo = ManageKeyFragment.arrayNoMCU.getJSONObject(pos);
@@ -167,14 +202,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         jsonKeyInfo.put("key", keyText.getText().toString());
                         jsonKeyInfo.put("secret", secretText.getText().toString());
                         jsonKeyInfo.put("description", descText.getText().toString());
-                        if(isMCU[0] != keyInfo.isMCU()) { // move to another array
+                        if (isMCU[0] != keyInfo.isMCU()) { // move to another array
                             JSONObject typeChangeObject = new JSONObject();
                             typeChangeObject.put("key", keyText.getText().toString());
                             typeChangeObject.put("secret", secretText.getText().toString());
                             typeChangeObject.put("description", descText.getText().toString());
                             typeChangeObject.put("MCU", isMCU[0]);
                             Log.e("keyInfo.isMCU()", String.valueOf(keyInfo.isMCU()));
-                            if(keyInfo.isMCU()){
+                            if (keyInfo.isMCU()) {
                                 Log.e("number of arrayNoMCU1", String.valueOf(ManageKeyFragment.arrayNoMCU.length()));
                                 ManageKeyFragment.arrayNoMCU.put(typeChangeObject);
                                 Log.e("arrayNoMCU2", String.valueOf(ManageKeyFragment.arrayNoMCU));
@@ -188,25 +223,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                 Log.e("arrayNoMCU", String.valueOf(ManageKeyFragment.arrayNoMCU));
                             }
                         }
-                        if(keyInfo.getKey().equals(Config.APP_KEY)){ // key u edit is current key
+                        if (keyInfo.getKey().equals(Config.APP_KEY)) { // key u edit is current key
                             Config.APP_KEY = keyText.getText().toString();
                             Config.APP_SECRET = secretText.getText().toString();
                             Config.APP_KEY_DESCRIPTION = descText.getText().toString();
                         }
                         saveUserInfo();
-                        if(keyInfo.isMCU()) {
+                        if (keyInfo.isMCU()) {
                             keyInfos = ManageKeyFragment.convertJSONArrayToKeyInfoList(ManageKeyFragment.arrayMCU);
                         } else {
                             keyInfos = ManageKeyFragment.convertJSONArrayToKeyInfoList(ManageKeyFragment.arrayNoMCU);
                         }
                         notifyDataSetChanged();
-                        Toast.makeText(context,"Edit Succeeded",Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Edit Succeeded", Toast.LENGTH_LONG).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                 } else {
-                    Toast.makeText(context,"Incorrect key, secret and/or you need to choose MCU or not",Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Incorrect key, secret and/or you need to choose MCU or not", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -238,16 +273,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         keyText.setText(keyInfo.getKey());
         secretText.setText(keyInfo.getSecret());
         descText.setText(keyInfo.getDescription());
-        rgMCUorNot.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
+        rgMCUorNot.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // checkedId is the RadioButton selected
-                if(checkedId == rbMCU.getId()) isMCU[0] = true;
-                else if(checkedId == rbNoMCU.getId()) isMCU[0] = false;
+                if (checkedId == rbMCU.getId()) isMCU[0] = true;
+                else if (checkedId == rbNoMCU.getId()) isMCU[0] = false;
             }
         });
-        if(keyInfo.isMCU()) {
+        if (keyInfo.isMCU()) {
             rgMCUorNot.check(rbMCU.getId());
         } else {
             rgMCUorNot.check(rbNoMCU.getId());
@@ -418,15 +452,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
-    private JSONArray removeItemFromJSONArrayAtIndex (JSONArray ja, int position) {
+    private JSONArray removeItemFromJSONArrayAtIndex(JSONArray ja, int position) {
         JSONArray jsArray = new JSONArray();
-        Log.e("Position",String.valueOf(position));
+        Log.e("Position", String.valueOf(position));
         try {
             boolean MCU = ja.getJSONObject(0).getBoolean("MCU");
             int len = ja.length();
             if (ja != null) {
-                for (int i=0;i<len;i++){
-                    if(i != position) {
+                for (int i = 0; i < len; i++) {
+                    if (i != position) {
                         JSONObject jo = new JSONObject();
                         jo.put("key", ja.getJSONObject(i).getString("key"));
                         jo.put("secret", ja.getJSONObject(i).getString("secret"));
@@ -436,14 +470,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     }
                 }
             }
-            if(MCU){
+            if (MCU) {
                 ManageKeyFragment.arrayMCU = jsArray;
-                Log.e("No of arraryMCU1",String.valueOf(ManageKeyFragment.arrayMCU));
-                Log.e("No of arraryNoMCU1",String.valueOf(ManageKeyFragment.arrayNoMCU));
+                Log.e("No of arraryMCU1", String.valueOf(ManageKeyFragment.arrayMCU));
+                Log.e("No of arraryNoMCU1", String.valueOf(ManageKeyFragment.arrayNoMCU));
             } else {
                 ManageKeyFragment.arrayNoMCU = jsArray;
-                Log.e("No of arraryNoMCU2",String.valueOf(ManageKeyFragment.arrayNoMCU));
-                Log.e("No of arraryMCU2",String.valueOf(ManageKeyFragment.arrayMCU));
+                Log.e("No of arraryNoMCU2", String.valueOf(ManageKeyFragment.arrayNoMCU));
+                Log.e("No of arraryMCU2", String.valueOf(ManageKeyFragment.arrayMCU));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -457,13 +491,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
-
     public class rvViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textView;
         TextView textView2;
         ImageView editImg;
         ImageView deleteImg;
         RadioButton rdDefault;
+        RadioGroup rgDefault;
 
         public rvViewHolder(View itemView) {
             super(itemView);
@@ -473,10 +507,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             // When Click Edit Button
             editImg = (ImageView) v.findViewById(R.id.editImage);
             deleteImg = (ImageView) v.findViewById(R.id.deleteImage);
-            rdDefault = (RadioButton) v.findViewById(R.id.rdDefault);
+            rdDefault = (RadioButton) v.findViewById(R.id.rbDefault);
+            rgDefault = (RadioGroup) v.findViewById(R.id.rgDefault);
             // Setup the click listener
             v.setOnClickListener(this);
         }
+
         @Override
         public void onClick(View view) {
 

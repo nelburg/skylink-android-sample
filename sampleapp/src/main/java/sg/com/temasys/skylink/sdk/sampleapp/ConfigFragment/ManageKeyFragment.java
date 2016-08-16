@@ -72,7 +72,7 @@ public class ManageKeyFragment extends Fragment {
     final private String TAG = "SharedPreferenceTest";
 
     List keyInfoList = new ArrayList();
-    boolean mcuSelect = Boolean.parseBoolean(null);
+    static boolean mcuSelect = Boolean.parseBoolean(null);
 
     static JSONArray arrayMCU = new JSONArray();
     static JSONArray arrayNoMCU = new JSONArray();
@@ -119,7 +119,6 @@ public class ManageKeyFragment extends Fragment {
         rGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-
                 if (checkedId == R.id.radio_btn_manage_MCU) {
                     mcuSelect = true;
                     keyInfoList = convertJSONArrayToKeyInfoList(arrayMCU);
