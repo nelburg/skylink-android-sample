@@ -19,14 +19,19 @@
         android:orientation="horizontal"
         android:paddingBottom="20dp"
         android:paddingTop="20dp">
-
-        <RadioButton
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:id="@+id/radio_grp_manage_MCU"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/rdDefault" />
-
+        </RadioGroup>
         <TextView
             android:id="@+id/subTextview"
             android:layout_width="wrap_content"
